@@ -101,7 +101,7 @@ namespace DeleteDefect.Controllers
 
             // Buat header CSV
             var csvBuilder = new StringBuilder();
-            csvBuilder.AppendLine("\"No\",\"Id\",\"Tanggal\",\"Waktu\",\"ModelCode\",\"SerialNumber\",\"DefectName\",\"InspectorName\",\"ModelNumber\",\"LocationName\"");
+            csvBuilder.AppendLine("\"No\",\"Tanggal\",\"Waktu\",\"ModelCode\",\"SerialNumber\",\"DefectName\",\"InspectorName\",\"ModelNumber\",\"LocationName\"");
 
             int index = 1;
             foreach (var defect in defects)

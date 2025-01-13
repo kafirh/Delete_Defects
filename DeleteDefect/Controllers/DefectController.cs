@@ -19,6 +19,8 @@ namespace DeleteDefect.Controllers
         public async Task<IActionResult> Index()
         {
             var selectedDate = DateTime.Now.Date;
+            // Ambil status admin dari session
+            bool isAdmin = HttpContext.Session.GetString("IsAdmin") == "True";
 
             // Menyimpan tanggal yang dipilih pada ViewData agar tetap muncul di form
             ViewData["SelectedDate"] = selectedDate.ToString("yyyy-MM-dd");

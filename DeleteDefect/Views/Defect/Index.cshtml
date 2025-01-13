@@ -58,7 +58,9 @@
                 <th>InspectorId</th>
                 <th>ModelNumber</th>
                 <th>Location</th>
-                <th>Action</th>
+                @if(Context.Session.GetString("IsAdmin") == "True"){
+                    <th>Action</th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -74,14 +76,18 @@
                     <td>@product.value.Inspector?.Name</td>
                     <td>@product.value.ModelNumber</td>
                     <td>@product.value.Location?.LocationName</td>
-                    <td class="text-center">
-                        <form action="/Defect/Delete/@product.value.Id"
-                              method="post"
-                              onsubmit="return confirm('Are you sure you want to delete this item?');">
-                            <input type="hidden" name="selectedDate" value="@ViewData["SelectedDate"]" />
-                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                        </form>
-                    </td>
+                    @if (Context.Session.GetString("IsAdmin") == "True")
+                    {
+                        <td class="text-center">
+                            <form action="/Defect/Delete/@product.value.Id"
+                                  method="post"
+                                  onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                <input type="hidden" name="selectedDate" value="@ViewData["SelectedDate"]" />
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    }
+
                 </tr>
             }
         </tbody>

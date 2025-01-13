@@ -11,6 +11,7 @@ namespace DeleteDefect.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
+        private readonly List<string> adminNIKs = new List<string> { "7098", "5714", "7217" };
 
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
@@ -42,6 +43,9 @@ namespace DeleteDefect.Controllers
                     // Simpan informasi user ke session
                     HttpContext.Session.SetString("UserNIK", user.NIK);
                     HttpContext.Session.SetString("UserName", user.Name);
+
+                    bool isAdmin = adminNIKs.Contains(user.NIK);
+                    HttpContext.Session.SetString("IsAdmin", isAdmin.ToString());
 
                     return RedirectToAction("Index", "Defect");
                 }

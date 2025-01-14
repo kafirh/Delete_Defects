@@ -5,7 +5,7 @@ public class InspectorModel
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Auto-increment
-    public int Id { get; set; }
+    public String Id { get; set; }
 
     required public string PasswordHash { get; set; }
     required public string NIK { get; set; }

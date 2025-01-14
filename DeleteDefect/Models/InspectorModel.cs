@@ -3,8 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 public class InspectorModel
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Auto-increment
     public String Id { get; set; }
 
     required public string PasswordHash { get; set; }

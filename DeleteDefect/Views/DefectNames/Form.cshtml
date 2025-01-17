@@ -1,0 +1,66 @@
+﻿@model DeleteDefect.Models.DefectNameModel
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4" style="color: #0056b3; font-weight: bold;">
+        @(Model != null && Model.Id > 0 ? "Edit Defect" : "Add New Defect")
+    </h1>
+
+    <div class="d-flex justify-content-center">
+        <form asp-action="Save"
+              method="post"
+              class="p-4 rounded shadow-sm"
+              style="background-color: #f8f9fa; border: 2px solid #0056b3; max-width: 600px; width: 100%;">
+
+            <!-- Hidden Input for ID -->
+            <input type="hidden" asp-for="Id" />
+
+            <!-- Defect Name -->
+            <div class="form-group mb-4">
+                <label for="DefectName" style="font-weight: bold;">Defect Name</label>
+                <input type="text" asp-for="DefectName"
+                       class="form-control"
+                       required
+                       placeholder="Enter Defect Name"
+                       style="font-size: 1rem; border: 1px solid #0056b3;" />
+            </div>
+
+            <!-- Priority -->
+            <div class="form-group mb-4">
+                <label for="Priority" style="font-weight: bold;">Priority</label>
+                <input type="number" asp-for="Priority"
+                       class="form-control"
+                       required
+                       placeholder="Enter Priority"
+                       min="1"
+                       style="font-size: 1rem; border: 1px solid #0056b3;" />
+            </div>
+
+            <!-- Character Dropdown -->
+            <div class="form-group mb-4">
+                <label for="ChartId" style="font-weight: bold;">Character</label>
+                <select asp-for="ChartId"
+                        class="form-select"
+                        asp-items="ViewBag.Characters"
+                        required
+                        style="font-size: 1rem; border: 1px solid #0056b3;">
+                    <option value="" disabled>Select a Character</option>
+                </select>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex justify-content-end">
+                <button type="submit"
+                        class="btn btn-success px-4 py-2 me-3"
+                        style="font-size: 1rem; font-weight: bold; background-color: #28a745; border-color: #28a745;">
+                    @(Model != null && Model.Id > 0 ? "Update" : "Add")
+                </button>
+                <a asp-controller="DefectNames"
+                   asp-action="Index"
+                   class="btn btn-secondary px-4 py-2"
+                   style="font-size: 1rem; font-weight: bold;">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

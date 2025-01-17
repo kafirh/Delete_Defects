@@ -4,61 +4,54 @@
     ViewData["Title"] = "Defect Page";
 }
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center">
-        <div></div>
-        <h1 class="text-center my-4">LSBU Defect Record</h1>
-        <div class="logout-container">
-            <form asp-controller="Home" asp-action="Logout" method="post">
-                <button type="submit" class="btn btn-danger">Logout</button>
-            </form>
-        </div>
+    <div class="d-flex justify-content-center align-items-center">
+        <h1 class="text-center" style="color: #0056b3; font-weight: bold;">LSBU Defect Record</h1>
     </div>
 
-
     <!-- Header Section -->
-    <div class="d-flex justify-content-between align-items-center mb-4 p-3 rounded" style="background-color: #f0f8ff; border: 1px solid #007bff;">
+    <div class="d-flex justify-content-between align-items-center mb-3 p-3 rounded" style="background-color: #eaf4ff; border: 2px solid #0056b3;">
         <div>
-            <h4 style="color: #007bff; font-weight: bold;">TOTAL DEFECT: <span style="font-size: 1.5rem;">@Model.Count()</span></h4>
+            <h4 style="color: #0056b3; font-weight: bold;">TOTAL DEFECT: <span style="font-size: 1.5rem; color: #dc3545;">@Model.Count()</span></h4>
         </div>
         <div>
             <label for="selectedDate" class="me-2" style="font-weight: bold; color: #0056b3;">Pilih Tanggal:</label>
-            <form method="get" action="/Defect/Selected" style="display: inline-block;">
+            <form method="get" asp-action="Selected" asp-controller="Defect" style="display: inline-block;">
                 <input type="date"
                        id="selectedDate"
                        name="selectedDate"
                        onchange="this.form.submit()"
                        value="@ViewData["SelectedDate"]"
                        class="form-control d-inline-block"
-                       style="width: auto;" />
+                       style="border: 1px solid #0056b3; width: auto;" />
             </form>
         </div>
-        
     </div>
 
     <!-- Export to CSV Section -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center mb-3">
         <div>
-            <form method="get" action="/Defect/ExportToCsv">
+            <form method="get" asp-action="ExportToExcel" asp-controller="Defect">
                 <input type="hidden" name="selectedDate" value="@ViewData["SelectedDate"]" />
-                <button type="submit" class="btn btn-success">Export to CSV</button>
+                <button type="submit" class="btn btn-success" style="background-color: #28a745; border-color: #28a745;">Export to Excel</button>
             </form>
         </div>
     </div>
 
     <!-- Table Section -->
-    <table class="table table-striped table-bordered">
-        <thead class="table-primary text-center">
+    <table class="table table-striped table-bordered" style="border: 1px solid #0056b3; border-collapse: collapse;">
+        <thead style="background-color: #eaf4ff; color: black;" class="text-center">
             <tr>
                 <th>No</th>
                 <th>Date</th>
-                <th>time</th>
-                <th>ModelCode</th>
-                <th>SerialNumber</th>
-                <th>DefectId</th>
-                <th>InspectorId</th>
-                <th>ModelNumber</th>
+                <th>Time</th>
+                <th>Model Code</th>
+                <th>Serial Number</th>
+                <th>Defect Name</th>
+                <th>Inspector Name</th>
+                <th>Model Number</th>
                 <th>Location</th>
-                @if(Context.Session.GetString("IsAdmin") == "True"){
+                @if (Context.Session.GetString("IsAdmin") == "True")
+                {
                     <th>Action</th>
                 }
             </tr>
@@ -68,26 +61,26 @@
             {
                 <tr>
                     <td class="text-center">@(product.index + 1)</td>
-                    <td>@product.value.DateTime.ToString("dd MMM yy", new System.Globalization.CultureInfo("id-ID"))</td>
-                    <td>@product.value.DateTime.ToString("HH:mm:ss")</td>
-                    <td>@product.value.ModelCode</td>
-                    <td>@product.value.SerialNumber</td>
+                    <td class="text-center">@product.value.DateTime.ToString("dd MMM yy", new System.Globalization.CultureInfo("id-ID"))</td>
+                    <td class="text-center">@product.value.DateTime.ToString("HH:mm:ss")</td>
+                    <td class="text-center">@product.value.ModelCode</td>
+                    <td class="text-center">@product.value.SerialNumber</td>
                     <td>@product.value.Defect?.DefectName</td>
-                    <td>@product.value.Inspector?.Name</td>
-                    <td>@product.value.ModelNumber</td>
-                    <td>@product.value.Location?.LocationName</td>
+                    <td class="text-center">@product.value.Inspector?.Name</td>
+                    <td class="text-center">@product.value.ModelNumber</td>
+                    <td class="text-center">@product.value.Location?.LocationName</td>
                     @if (Context.Session.GetString("IsAdmin") == "True")
                     {
                         <td class="text-center">
                             <form action="/Defect/Delete/@product.value.Id"
                                   method="post"
-                                  onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                  onsubmit="return confirm('Are you sure you want to delete this item?');"
+                                  style="display: inline;">
                                 <input type="hidden" name="selectedDate" value="@ViewData["SelectedDate"]" />
                                 <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                             </form>
                         </td>
                     }
-
                 </tr>
             }
         </tbody>

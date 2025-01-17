@@ -4,6 +4,8 @@ using DeleteDefect.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DeleteDefect.Data;
+using ClosedXML.Excel;
+using DocumentFormat.OpenXml.InkML;
 
 namespace DeleteDefect.Controllers
 {
@@ -18,6 +20,10 @@ namespace DeleteDefect.Controllers
 
         public async Task<IActionResult> Index()
         {
+            if (HttpContext.Session.GetString("UserNIK") == null)
+            {
+                return RedirectToAction("Index", "Home"); // Redirect ke login jika belum login
+            }
             var selectedDate = DateTime.Now.Date;
             // Ambil status admin dari session
             bool isAdmin = HttpContext.Session.GetString("IsAdmin") == "True";
@@ -38,6 +44,10 @@ namespace DeleteDefect.Controllers
 
         public async Task<IActionResult> Selected(DateTime? selectedDate)
         {
+            if (HttpContext.Session.GetString("UserNIK") == null)
+            {
+                return RedirectToAction("Index", "Home"); // Redirect ke login jika belum login
+            }
             // Simpan tanggal yang dipilih agar tetap muncul di form
             ViewData["SelectedDate"] = selectedDate?.ToString("yyyy-MM-dd");
 
@@ -78,54 +88,84 @@ namespace DeleteDefect.Controllers
             // Redirect ke Index jika tidak ada tanggal yang dipilih
             return RedirectToAction("Index");
         }
-        public async Task<IActionResult> ExportToCsv(DateTime? selectedDate)
+
+public async Task<IActionResult> ExportToExcel(DateTime? selectedDate)
+    {
+        if (!selectedDate.HasValue)
         {
-            if (!selectedDate.HasValue)
-            {
-                return BadRequest("Tanggal tidak valid.");
-            }
-
-            // Filter data berdasarkan tanggal yang dipilih
-            var defects = await _context.Defect_Results
-                .Where(d => d.DateTime.Date == selectedDate.Value.Date)
-                .Include(d => d.Location)
-                .Include(d => d.Defect)
-                .Include(d => d.Inspector)
-                .ToListAsync();
-
-            // Jika tidak ada data, berikan pesan
-            if (!defects.Any())
-            {
-                return NotFound("Tidak ada data pada tanggal yang dipilih.");
-            }
-
-            // Buat header CSV
-            var csvBuilder = new StringBuilder();
-            csvBuilder.AppendLine("\"No\",\"Tanggal\",\"Waktu\",\"ModelCode\",\"SerialNumber\",\"DefectName\",\"InspectorName\",\"ModelNumber\",\"LocationName\"");
-
-            int index = 1;
-            foreach (var defect in defects)
-            {
-                csvBuilder.AppendLine(string.Join(",",
-                    $"\"{index}\"",
-                    $"\"{defect.DateTime.ToString("dd MMM yy", CultureInfo.InvariantCulture)}\"", // Tanggal dalam format "13 Sep 24"
-                    $"\"{defect.DateTime.ToString("HH:mm:ss", CultureInfo.InvariantCulture)}\"", // Waktu 24 jam dengan detik
-                    $"\"{defect.ModelCode}\"",
-                    $"\"{defect.SerialNumber}\"",
-                    $"\"{defect.Defect?.DefectName}\"",
-                    $"\"{defect.Inspector?.Name}\"",
-                    $"\"{defect.ModelNumber}\"",
-                    $"\"{defect.Location?.LocationName}\""
-                ));
-                index++; // Increment nomor
-            }
-
-            // Konversi ke byte array dan kembalikan sebagai file
-            var fileBytes = Encoding.UTF8.GetBytes(csvBuilder.ToString());
-            var fileName = $"Defects_{selectedDate.Value:yyyy-MM-dd}.csv";
-
-            return File(fileBytes, "text/csv", fileName);
+            return BadRequest("Tanggal tidak valid.");
         }
 
+        // Filter data berdasarkan tanggal yang dipilih
+        var defects = await _context.Defect_Results
+            .Where(d => d.DateTime.Date == selectedDate.Value.Date)
+            .Include(d => d.Location)
+            .Include(d => d.Defect)
+            .Include(d => d.Inspector)
+            .ToListAsync();
+
+        // Jika tidak ada data, beri pesan
+        if (!defects.Any())
+        {
+            ViewBag.ErrorMessage = "Tidak ada data untuk tanggal tersebut.";
+            return await Selected(selectedDate);
+        }
+
+        // Buat workbook Excel
+        using (var workbook = new XLWorkbook())
+        {
+            var worksheet = workbook.Worksheets.Add("Defect Data");
+
+            // Header Excel
+            worksheet.Cell(1, 1).Value = "No";
+            worksheet.Cell(1, 2).Value = "Tanggal";
+            worksheet.Cell(1, 3).Value = "Waktu";
+            worksheet.Cell(1, 4).Value = "ModelCode";
+            worksheet.Cell(1, 5).Value = "SerialNumber";
+            worksheet.Cell(1, 6).Value = "DefectName";
+            worksheet.Cell(1, 7).Value = "InspectorName";
+            worksheet.Cell(1, 8).Value = "ModelNumber";
+            worksheet.Cell(1, 9).Value = "LocationName";
+
+            // Format header
+            var headerRange = worksheet.Range("A1:I1");
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+
+            int rowIndex = 2;
+            int index = 1;
+
+            foreach (var defect in defects)
+            {
+                worksheet.Cell(rowIndex, 1).Value = index; // No
+                worksheet.Cell(rowIndex, 2).Value = defect.DateTime.ToString("dd MMM yy", CultureInfo.InvariantCulture); // Tanggal
+                worksheet.Cell(rowIndex, 3).Value = defect.DateTime.ToString("HH:mm:ss", CultureInfo.InvariantCulture); // Waktu
+                worksheet.Cell(rowIndex, 4).Value = defect.ModelCode; // ModelCode
+                worksheet.Cell(rowIndex, 5).Value = defect.SerialNumber; // SerialNumber
+                worksheet.Cell(rowIndex, 6).Value = defect.Defect?.DefectName; // DefectName
+                worksheet.Cell(rowIndex, 7).Value = defect.Inspector?.Name; // InspectorName
+                worksheet.Cell(rowIndex, 8).Value = defect.ModelNumber; // ModelNumber
+                worksheet.Cell(rowIndex, 9).Value = defect.Location?.LocationName; // LocationName
+
+                rowIndex++;
+                index++;
+            }
+
+            // Autosize semua kolom
+            worksheet.Columns().AdjustToContents();
+
+            // Konversi workbook ke byte array
+            using (var stream = new MemoryStream())
+            {
+                workbook.SaveAs(stream);
+                var fileBytes = stream.ToArray();
+                var fileName = $"Defects_{selectedDate.Value:yyyy-MM-dd}.xlsx";
+
+                return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+            }
+        }
     }
+
+
+}
 }

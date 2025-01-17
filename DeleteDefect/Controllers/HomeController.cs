@@ -11,7 +11,7 @@ namespace DeleteDefect.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
-        private readonly List<string> adminNIKs = new List<string> { "7098", "5714", "7217" };
+        private readonly List<string> adminNIKs = new List<string> { "adnan", "admin", "hasbi" };
 
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {

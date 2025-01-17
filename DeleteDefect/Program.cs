@@ -7,10 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.IdleTimeout = TimeSpan.FromHours(4).Add(TimeSpan.FromMinutes(30)); // 4 jam 30 menit
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
 });
 
 // Tambahkan layanan untuk logging
@@ -44,17 +44,16 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+    //app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
 app.UseSession();
 app.UseAuthentication(); // Jika menggunakan autentikasi
-app.UseAuthorization();
 
 // Global Exception Handling
 app.Use(async (context, next) =>

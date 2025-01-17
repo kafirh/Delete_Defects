@@ -1,0 +1,89 @@
+﻿@model IEnumerable<DeleteDefect.Models.DefectNameModel>
+
+<div class="d-flex justify-content-center align-items-center">
+    <h1 class="text-center" style="color: #0056b3; font-weight: bold;">LSBU Defect Names List</h1>
+</div>
+
+<!-- Header Section -->
+<div class="d-flex justify-content-between align-items-center mb-3 p-3 rounded" style="background-color: #eaf4ff; border: 2px solid #0056b3;">
+    <div>
+        <h4 style="color: #0056b3; font-weight: bold;">TOTAL DEFECT: <span style="font-size: 1.5rem; color: #dc3545;">@Model.Count()</span></h4>
+    </div>
+    <div>
+        <form method="get" asp-action="Index" class="d-flex">
+            <input type="text" id="searchQuery" name="searchQuery" value="@ViewData["SearchQuery"]" class="form-control me-2" placeholder="Search Defect Name" style="border: 1px solid #0056b3;" />
+            <button type="submit" class="btn btn-primary me-2">Search</button>
+            <button type="button" id="clearButton" class="btn btn-secondary">Clear</button>
+        </form>
+    </div>
+</div>
+
+<!-- Add Button -->
+<div class="d-flex mb-3">
+    <a asp-controller="DefectNames" asp-action="Form" class="btn btn-success" style="background-color: #28a745; border-color: #28a745;">+ Add New Defect</a>
+</div>
+
+<table class="table table-striped table-bordered" style="border: 1px solid #0056b3; border-collapse: collapse;">
+    <thead style="background-color: #eaf4ff; color: black;" class="text-center">
+        <tr>
+            <th>No.</th>
+            <th>Defect Name</th>
+            <th>Priority</th>
+            <th>Alphabet</th>
+            @if (Context.Session.GetString("IsAdmin") == "True")
+            {
+                <th>Action</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            var counter = 1; // Inisialisasi nomor urut
+            foreach (var defectName in Model)
+            {
+                <tr>
+                    <td class="text-center">@counter</td> <!-- Menampilkan nomor urut -->
+                    <td>@defectName.DefectName</td>
+                    <td class="text-center">@defectName.Priority</td>
+                    <td class="text-center">@defectName.Char?.Character</td>
+                    @if (Context.Session.GetString("IsAdmin") == "True")
+                    {
+                        <td class="text-center">
+                            <!-- Edit Button -->
+                            <a asp-controller="DefectNames" asp-action="Form" asp-route-id="@defectName.Id"
+                               class="btn btn-sm btn-warning me-2"
+                               style="color: white; width: 80px; display: inline-block;">Edit</a>
+
+                            <!-- Delete Form -->
+                            <form asp-controller="DefectNames" asp-action="Delete" asp-route-id="@defectName.Id"
+                                  method="post"
+                                  onsubmit="return confirm('Are you sure you want to delete this item?');"
+                                  style="display: inline-block; margin: 0;">
+                                <button type="submit" class="btn btn-sm btn-danger" style="width: 80px; height: 34px;">Delete</button>
+                            </form>
+                        </td>
+                    }
+                </tr>
+                counter++; // Menambahkan nomor urut
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center text-danger">No data available.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    document.getElementById('clearButton').addEventListener('click', function () {
+        // Clear the search input
+        document.getElementById('searchQuery').value = '';
+
+        // Get base path dynamically
+        const basePath = document.querySelector('base')?.getAttribute('href') || '';
+        window.location.href = basePath + '~/DefectNames/Index';
+    });
+</script>

@@ -28,8 +28,16 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[D:/panasonic/Delete_Defects/DeleteDefect/Views/Defect/index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVmZWN0XGluZGV4LmNzaHRtbA==
+[D:/panasonic/Delete_Defects/DeleteDefect/Views/DefectNames/Form.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVmZWN0TmFtZXNcRm9ybS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/panasonic/Delete_Defects/DeleteDefect/Views/DefectNames/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVmZWN0TmFtZXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/panasonic/Delete_Defects/DeleteDefect/Views/Defect/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVmZWN0XEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/panasonic/Delete_Defects/DeleteDefect/Views/Home/Index.cshtml]

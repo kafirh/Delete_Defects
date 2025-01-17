@@ -546,3 +546,11 @@ D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\zh-Hant\Microsoft.Code
 D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Security.Cryptography.ProtectedData.dll
 D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Windows.Extensions.dll
 D:\panasonic\Delete_Defects\DeleteDefect\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\ClosedXML.dll
+D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\ClosedXML.Parser.dll
+D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\ExcelNumberFormat.dll
+D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\RBush.dll
+D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\SixLabors.Fonts.dll
+D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\System.IO.Packaging.dll

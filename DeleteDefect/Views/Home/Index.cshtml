@@ -110,17 +110,17 @@
             <form asp-action="Login" method="post">
                 <div class="form-field">
                     <span class="input-icon">
-                        <img src="/Source/worker.png" alt="Username Icon" />
+                        <img src="~/Source/worker.png" alt="Username Icon" />
                     </span>
                     <input type="text" id="username" name="Username" placeholder="Enter Username" required />
                 </div>
                 <div class="form-field">
                     <span class="input-icon">
-                        <img src="../source/padlock.png" alt="password Icon" />
+                        <img src="~/source/padlock.png" alt="password Icon" />
                     </span>
                     <input type="password" id="password" name="Password" placeholder="Enter Password" required />
                     <button type="button" class="toggle-password" onclick="togglePasswordVisibility()" id="toggle-password-btn">
-                        <img src="/source/show.png" alt="Show Password" id="toggle-password-icon" />
+                        <img src="~/source/show.png" alt="Show Password" id="toggle-password-icon" />
                     </button>
                 </div>
                 <button type="submit" class="btn">Login</button>
@@ -141,10 +141,10 @@
 
             if (passwordField.type === "password") {
                 passwordField.type = "text";
-                toggleIcon.src = "/source/hide.png";
+                toggleIcon.src = "~/source/hide.png";
             } else {
                 passwordField.type = "password";
-                toggleIcon.src = "/source/show.png";
+                toggleIcon.src = "~/source/show.png";
             }
         }
     </script>

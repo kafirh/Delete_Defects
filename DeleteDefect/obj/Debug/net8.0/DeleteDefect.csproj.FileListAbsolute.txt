@@ -554,3 +554,9 @@ D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\ExcelNumberFormat.dll
 D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\RBush.dll
 D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\SixLabors.Fonts.dll
 D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\System.IO.Packaging.dll
+D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\TableDependency.SqlClient.dll
+D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\runtimes\win7-x64\native\sni.dll
+D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\runtimes\win7-x86\native\sni.dll
+D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\runtimes\unix\lib\netstandard1.3\System.Data.SqlClient.dll
+D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\runtimes\win\lib\netstandard1.3\System.Data.SqlClient.dll
+D:\panasonic\Delete_Defects\DeleteDefect\bin\Debug\net8.0\libman.json

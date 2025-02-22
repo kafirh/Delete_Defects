@@ -5,84 +5,131 @@
 }
 <div class="container">
     <div class="d-flex justify-content-center align-items-center">
-        <h1 class="text-center" style="color: #0056b3; font-weight: bold;">LSBU Defect Record</h1>
+        <h1 class="text-center text-primary fw-bold">LSBU Defect Record</h1>
     </div>
 
     <!-- Header Section -->
-    <div class="d-flex justify-content-between align-items-center mb-3 p-3 rounded" style="background-color: #eaf4ff; border: 2px solid #0056b3;">
-        <div>
-            <h4 style="color: #0056b3; font-weight: bold;">TOTAL DEFECT: <span style="font-size: 1.5rem; color: #dc3545;">@Model.Count()</span></h4>
-        </div>
-        <div>
-            <label for="selectedDate" class="me-2" style="font-weight: bold; color: #0056b3;">Pilih Tanggal:</label>
-            <form method="get" asp-action="Selected" asp-controller="Defect" style="display: inline-block;">
-                <input type="date"
-                       id="selectedDate"
-                       name="selectedDate"
-                       onchange="this.form.submit()"
-                       value="@ViewData["SelectedDate"]"
-                       class="form-control d-inline-block"
-                       style="border: 1px solid #0056b3; width: auto;" />
-            </form>
-        </div>
+    <div class="d-flex justify-content-between align-items-center mb-3 p-3 rounded border border-primary bg-light">
+        <h4 id="TotalDefect" class="text-primary fw-bold">
+            TOTAL DEFECT: <span id="totalDefectCount" class="text-danger fs-4">@Model.Count()</span>
+        </h4>
+        <form method="get" asp-action="Selected" asp-controller="Defect">
+            <label for="selectedDate" class="me-2 fw-bold text-primary">Pilih Tanggal:</label>
+            <input type="date" id="selectedDate" name="selectedDate" onchange="this.form.submit()" value="@ViewData["SelectedDate"]" class="form-control d-inline-block border-primary" style="width: auto;" />
+        </form>
     </div>
 
-    <!-- Export to CSV Section -->
-    <div class="d-flex align-items-center mb-3">
-        <div>
-            <form method="get" asp-action="ExportToExcel" asp-controller="Defect">
-                <input type="hidden" name="selectedDate" value="@ViewData["SelectedDate"]" />
-                <button type="submit" class="btn btn-success" style="background-color: #28a745; border-color: #28a745;">Export to Excel</button>
-            </form>
-        </div>
+    <!-- Export to Excel Section -->
+    <div class="mb-3">
+        <form method="get" asp-action="ExportToExcel" asp-controller="Defect">
+            <input type="hidden" id="exportSelectedDate" name="selectedDate" value="@ViewData["SelectedDate"]" />
+            <button type="submit" class="btn btn-success">Export to Excel</button>
+        </form>
     </div>
 
     <!-- Table Section -->
-    <table class="table table-striped table-bordered" style="border: 1px solid #0056b3; border-collapse: collapse;">
-        <thead style="background-color: #eaf4ff; color: black;" class="text-center">
-            <tr>
-                <th>No</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Model Code</th>
-                <th>Serial Number</th>
-                <th>Defect Name</th>
-                <th>Inspector Name</th>
-                <th>Model Number</th>
-                <th>Location</th>
-                @if (Context.Session.GetString("IsAdmin") == "True")
-                {
-                    <th>Action</th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var product in Model.Select((value, index) => new { value, index }))
-            {
+    <div id="defectTableContainer">
+        <table class="table table-striped table-bordered border-primary">
+            <thead class="bg-light text-black text-center">
                 <tr>
-                    <td class="text-center">@(product.index + 1)</td>
-                    <td class="text-center">@product.value.DateTime.ToString("dd MMM yy", new System.Globalization.CultureInfo("id-ID"))</td>
-                    <td class="text-center">@product.value.DateTime.ToString("HH:mm:ss")</td>
-                    <td class="text-center">@product.value.ModelCode</td>
-                    <td class="text-center">@product.value.SerialNumber</td>
-                    <td>@product.value.Defect?.DefectName</td>
-                    <td class="text-center">@product.value.Inspector?.Name</td>
-                    <td class="text-center">@product.value.ModelNumber</td>
-                    <td class="text-center">@product.value.Location?.LocationName</td>
+                    <th>No</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Model Code</th>
+                    <th>Serial Number</th>
+                    <th>Defect Name</th>
+                    <th>Inspector Name</th>
+                    <th>Model Number</th>
+                    <th>Location</th>
                     @if (Context.Session.GetString("IsAdmin") == "True")
                     {
-                        <td class="text-center">
-                            <form action="/Defect/Delete/@product.value.Id"
-                                  method="post"
-                                  onsubmit="return confirm('Are you sure you want to delete this item?');"
-                                  style="display: inline;">
-                                <input type="hidden" name="selectedDate" value="@ViewData["SelectedDate"]" />
-                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                            </form>
-                        </td>
+                        <th>Action</th>
                     }
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var (value, index) in Model.Select((v, i) => (v, i)))
+                {
+                    <tr>
+                        <td class="text-center">@(index + 1)</td>
+                        <td class="text-center">@value.DateTime.ToString("dd MMM yy", new System.Globalization.CultureInfo("id-ID"))</td>
+                        <td class="text-center">@value.DateTime.ToString("HH:mm:ss")</td>
+                        <td class="text-center">@value.ModelCode</td>
+                        <td class="text-center">@value.SerialNumber</td>
+                        <td>@value.Defect?.DefectName</td>
+                        <td class="text-center">@value.Inspector?.Name</td>
+                        <td class="text-center">@value.ModelNumber</td>
+                        <td class="text-center">@value.Location?.LocationName</td>
+                        @if (Context.Session.GetString("IsAdmin") == "True")
+                        {
+                            <td class="text-center">
+                                <form action="/Defect/Delete/@value.Id" method="post" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                    <input type="hidden" name="selectedDate" value="@ViewData["SelectedDate"]" />
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl("/defectHub", { transport: signalR.HttpTransportType.WebSockets })
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        connection.on("ReceiveDefect", function (message) {
+            console.log("Defect terbaru: " + message);
+            refreshTable(message);
+        });
+
+        connection.start()
+            .then(() => console.log("Connected to DefectHub"))
+            .catch(err => console.error("Error connecting to DefectHub:", err));
+    });
+
+    function speak(text, lang, rate) {
+        if ('speechSynthesis' in window) {
+            let utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+            utterance.rate = rate;
+            utterance.pitch = 1;
+            speechSynthesis.speak(utterance);
+        } else {
+            console.error("Web Speech API tidak didukung di browser ini.");
+        }
+    }
+
+    function refreshTable(message) {
+        $.ajax({
+            url: '@Url.Action("Selected", "Defect")',
+            type: 'GET',
+            data: { selectedDate: $('#selectedDate').val() },
+            success: function (data) {
+                let newTable = $(data).find('#defectTableContainer').html();
+                if (newTable) {
+                    $('#defectTableContainer').html(newTable);
+                }
+
+                let newTotalDefect = $(data).find('#totalDefectCount').text();
+                $('#totalDefectCount').text(newTotalDefect);
+
+                // Setelah tabel diperbarui, baru panggil speak()
+                if (message) {
+                    speak("Defect Ditambahkan: " + message + " | Total Defect: " + newTotalDefect, "id-ID",0.8);
+                    speak("Defect Added: " + message + " | Total Defect: " + newTotalDefect, "en-US",0.6);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error refreshing defect table:", error);
+            }
+        });
+    }
+</script>

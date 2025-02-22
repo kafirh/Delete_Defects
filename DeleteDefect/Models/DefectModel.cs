@@ -1,7 +1,9 @@
-﻿using Org.BouncyCastle.Asn1.Cms;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Org.BouncyCastle.Asn1.Cms;
 
 namespace DeleteDefect.Models
 {
+    [Table("Defect_Results")]
     public class DefectModel
     {
         public int Id { get; set; }

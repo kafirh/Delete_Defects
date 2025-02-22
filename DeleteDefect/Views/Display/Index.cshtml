@@ -1,0 +1,246 @@
+﻿@model IEnumerable<DefectModel>
+@{
+    ViewData["Title"] = "Display Page";
+    ViewData["HideNavbar"] = true;
+}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; /* Menghilangkan margin default */
+            padding: 0; /* Menghilangkan padding default */
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #0d6efd, #17a2b8);
+            color: white;
+            border-radius: 0; /* Menghilangkan border radius */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 10px 0; /* Mengurangi padding atas-bawah */
+            margin: 0; /* Menghilangkan margin */
+            display: flex;
+            justify-content: space-between; /* Membagi teks ke kiri dan kanan */
+            align-items: center; /* Menyelaraskan item secara vertikal */
+        }
+
+        .header-left {
+            margin-left: 20px; /* Memberikan sedikit jarak dari tepi kiri */
+        }
+
+        .header-right {
+            margin-right: 20px; /* Memberikan sedikit jarak dari tepi kanan */
+            display: flex; /* Mengatur agar Total Defect dan angkanya berada dalam satu baris */
+            align-items: center; /* Menyelaraskan item secara vertikal */
+        }
+
+        .total-defect-label {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-right: 10px; /* Jarak antara label dan angka */
+        }
+
+        .total-defect {
+            font-size: 5rem; /* Memperbesar ukuran font Total Defect */
+            font-weight: bold;
+            color: #dc3545;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Menambah efek bayangan untuk kontras */
+            margin-right: 40px;
+        }
+
+        @@keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .pulse-animation {
+            animation: pulse 1.5s infinite;
+        }
+
+        .defect-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+            margin: 10px 0; /* Mengurangi margin atas-bawah */
+            padding: 20px;
+        }
+
+        .table-container {
+            max-height: 634px; /* Tinggi tabel */
+            overflow-y: auto;
+        }
+
+        .table thead th {
+            background-color: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+            font-size: 1.2rem; /* Memperbesar font header tabel */
+            font-weight: bold;
+            position: sticky; /* Membuat header tetap saat discroll */
+            top: 0; /* Tetap di bagian atas container */
+            z-index: 1; /* Pastikan header tetap di atas konten lain */
+        }
+
+        .table tbody td {
+            font-size: 1rem; /* Memperbesar font isi tabel */
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        /* Menghilangkan jarak di kanan-kiri */
+        .container-fluid {
+            padding: 0 !important;
+        }
+
+        .row {
+            margin: 0 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid p-0">
+        <!-- Header Section -->
+        <div class="row m-0">
+            <div class="col-12 header-section">
+                <div class="header-left">
+                    <h1 class="fw-bold">LSBU Defect Record</h1>
+                    <p class="lead">Real-time monitoring of defects for today's production.</p>
+                </div>
+                <div class="header-right">
+                    <div class="total-defect-label">Total Defect:</div>
+                    <h2 class="total-defect pulse-animation" id="totalDefectCount">@Model.Count()</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Defect Table Section -->
+        <div class="row m-0 justify-content-center">
+            <div class="col-lg-12 col-md-12 defect-card rounded">
+                <div id="defectTableContainer" class="table-container">
+                    <table class="table table-striped table-bordered border-primary">
+                        <thead>
+                            <tr>
+                                <th class="text-center">No</th>
+                                <th class="text-center">Date</th>
+                                <th class="text-center">Time</th>
+                                <th class="text-center">Model Code</th>
+                                <th class="text-center">Serial Number</th>
+                                <th class="text-center">Defect Name</th>
+                                <th class="text-center">Inspector Name</th>
+                                <th class="text-center">Model Number</th>
+                                <th class="text-center">Location</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var (value, index) in Model.Select((v, i) => (v, i)))
+                            {
+                                <tr>
+                                    <td class="text-center">@(index + 1)</td>
+                                    <td class="text-center">@value.DateTime.ToString("dd MMM yy", new System.Globalization.CultureInfo("id-ID"))</td>
+                                    <td class="text-center">@value.DateTime.ToString("HH:mm:ss")</td>
+                                    <td class="text-center">@value.ModelCode</td>
+                                    <td class="text-center">@value.SerialNumber</td>
+                                    <td class="text-center">@value.Defect?.DefectName</td>
+                                    <td class="text-center">@value.Inspector?.Name</td>
+                                    <td class="text-center">@value.ModelNumber</td>
+                                    <td class="text-center">@value.Location?.LocationName</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script>
+        $(document).ready(function () {
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl(window.location.origin + "/defectHub", { transport: signalR.HttpTransportType.WebSockets })
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+
+            connection.on("ReceiveDefect", function (message) {
+                console.log("Defect terbaru: " + message);
+                refreshTable(message);
+            });
+
+            connection.start()
+                .then(() => console.log("Connected to DefectHub"))
+                .catch(err => console.error("Error connecting to DefectHub:", err));
+        });
+
+        function speak(text, lang, rate) {
+            if ('speechSynthesis' in window) {
+                let utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = lang;
+                utterance.rate = rate;
+                utterance.pitch = 1;
+
+                let voices = speechSynthesis.getVoices();
+                let selectedVoice = voices.find(voice => voice.lang.startsWith(lang)) || voices.find(voice => voice.default);
+
+                if (selectedVoice) {
+                    utterance.voice = selectedVoice;
+                }
+
+                speechSynthesis.speak(utterance);
+            } else {
+                console.error("Web Speech API tidak didukung di browser ini.");
+            }
+        }
+
+        // Pastikan daftar suara tersedia sebelum berbicara
+        speechSynthesis.onvoiceschanged = function () {
+            console.log("Voice list updated");
+        };
+
+        function refreshTable(message) {
+            $.ajax({
+                url: '@Url.Action("Index", "Display")',
+                type: 'GET',
+                success: function (data) {
+                    let newTable = $(data).find('#defectTableContainer').html();
+                    if (newTable) {
+                        $('#defectTableContainer').html(newTable);
+                    }
+                    let newTotalDefect = $(data).find('#totalDefectCount').text();
+                    $('#totalDefectCount').text(newTotalDefect);
+
+                    // Speak the update in Indonesian and English
+                    if (message) {
+                        speak("Defect Ditambahkan: " + message + " , Total Defect: " + newTotalDefect, "id-ID", 0.8);
+                        speak("Defect Added: " + message + " , Total Defect: " + newTotalDefect, "en-US", 0.6);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error refreshing defect table:", error);
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
